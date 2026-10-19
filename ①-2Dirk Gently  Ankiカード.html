@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>【Dirk Gently】①-2 フラッシュカード</title>
+ <style>
+ body {
+ font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+ background-color: #f7f9fc;
+ color: #333333;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ padding: 20px;
+ margin: 0;
+ }
+
+ h1 {
+ font-size: 1.5rem;
+ color: #2c3e50;
+ margin-bottom: 10px;
+ }
+
+ .header-stats {
+ display: flex;
+ justify-content: space-between;
+ width: 100%;
+ max-width: 600px;
+ margin-bottom: 15px;
+ font-size: 1.1rem;
+ font-weight: bold;
+ color: #555;
+ padding: 0 10px;
+ }
+
+ .top-controls {
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: center;
+ gap: 8px;
+ width: 100%;
+ max-width: 600px;
+ margin-bottom: 20px;
+ }
+
+ .top-btn {
+ flex: 1;
+ min-width: 130px;
+ padding: 10px 12px;
+ font-size: 0.95rem;
+ border: none;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: bold;
+ color: white;
+ transition: background-color 0.2s, transform 0.1s;
+ box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+ }
+
+ .top-btn:active { transform: scale(0.98); }
+ 
+.btn-all { background-color: #7f8c8d; }
+ .btn-all:hover { background-color: #6c7a7d; }
+ .btn-unanswered { background-color: #3498db; }
+ .btn-unanswered:hover { background-color: #2980b9; }
+ .btn-review { background-color: #e67e22; }
+ .btn-review:hover { background-color: #d35400; }
+ .btn-incorrect { background-color: #9b59b6; }
+ .btn-incorrect:hover { background-color: #8e44ad; }
+
+ .mode-indicator {
+ font-size: 0.9rem;
+ color: #e67e22;
+ font-weight: bold;
+ margin-bottom: 10px;
+ }
+
+ #flashcard {
+ background-color: #ffffff;
+ width: 100%;
+ max-width: 600px;
+ min-height: 400px;
+ border-radius: 16px;
+ box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
+ padding: 30px;
+ box-sizing: border-box;
+ text-align: center;
+ position: relative;
+ }
+
+ #front-side, #back-side {
+ width: 100%;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
+ }
+ 
+#back-side {
+ display: none;
+ text-align: left;
+ align-items: flex-start;
+ }
+
+ .date-badge {
+ font-size: 0.85rem;
+ background-color: #edf2f7;
+ color: #4a5568;
+ padding: 6px 14px;
+ border-radius: 20px;
+ margin-bottom: 5px;
+ font-weight: bold;
+ display: inline-block;
+ }
+
+ .srs-badge {
+ font-size: 0.8rem;
+ color: #e67e22;
+ margin-bottom: 20px;
+ font-weight: bold;
+ }
+
+ .english-text {
+ font-size: 1.4rem;
+ font-weight: bold;
+ color: #1a1a1a;
+ margin-bottom: 25px;
+ line-height: 1.4;
+ text-align: center;
+ }
+
+ .english-text-back {
+ font-size: 1.2rem;
+ font-weight: bold;
+ color: #34495e;
+ margin-bottom: 15px;
+ line-height: 1.4;
+ text-align: left;
+ width: 100%;
+ border-bottom: 2px dashed #e1e8ed;
+ padding-bottom: 15px;
+ }
+
+ .japanese-text {
+ font-size: 1.2rem;
+ font-weight: bold;
+ color: #2c3e50;
+ margin-bottom: 20px;
+ line-height: 1.6;
+ width: 100%;
+ border-bottom: 2px solid #e1e8ed;
+ padding-bottom: 15px;
+ }
+
+ .note-box {
+ background-color: #fff9e6;
+ border-left: 4px solid #f5a623;
+ padding: 15px;
+ border-radius: 4px;
+ font-size: 1rem;
+ line-height: 1.6;
+ color: #5c4716;
+ width: 100%;
+ box-sizing: border-box;
+ }
+
+ #play-audio-btn {
+ font-size: 1.1rem;
+ padding: 12px 24px;
+ border-radius: 30px;
+ background-color: #4a90e2;
+ color: white;
+ border: none;
+ cursor: pointer;
+ box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
+ transition: transform 0.1s, background-color 0.2s;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 8px;
+ font-weight: bold;
+ }
+
+ #play-audio-btn:active {
+ transform: scale(0.95);
+ background-color: #357abd;
+ }
+
+ .controls {
+ display: flex;
+ gap: 10px;
+ margin-top: 30px;
+ width: 100%;
+ max-width: 600px;
+ justify-content: center;
+ }
+
+ .action-btn {
+ flex: 1;
+ padding: 15px 10px;
+ font-size: 1rem;
+ border: none;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: bold;
+ transition: background-color 0.2s, opacity 0.2s;
+ }
+
+ #prev-btn { background-color: #e2e8f0; color: #4a5568; }
+ #flip-btn { background-color: #4a90e2; color: white; }
+ #next-btn { background-color: #e2e8f0; color: #4a5568; }
+
+ .eval-btn {
+ flex: 1;
+ padding: 15px 5px;
+ font-size: 1rem;
+ border: none;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: bold;
+ color: white;
+ }
+
+ #back-to-front-btn { background-color: #95a5a6; }
+ #back-to-front-btn:hover { background-color: #7f8c8d; }
+ #wrong-btn { background-color: #e74c3c; }
+ #wrong-btn:hover { background-color: #c0392b; }
+ 
+#correct-btn { background-color: #2ecc71; }
+ #correct-btn:hover { background-color: #27ae60; }
+
+ .empty-state {
+ font-size: 1.5rem;
+ color: #2ecc71;
+ font-weight: bold;
+ text-align: center;
+ line-height: 1.5;
+ }
+ </style>
+</head>
+<body>
+
+ <h1>🎧 【Dirk Gently】①-2 フラッシュカード</h1>
+
+ <div class="header-stats">
+ <span id="progress-text">1 / 277</span>
+ <span id="score-text">正解数: 0</span>
+ </div>
+ 
+<div class="mode-indicator" id="mode-indicator">現在のモード：📁 全問</div>
+
+ <div class="top-controls">
+ <button class="top-btn btn-all" onclick="setMode('all')">📁 全問</button>
+ <button class="top-btn btn-unanswered" onclick="jumpToUnanswered()">🆕 未回答へジャンプ</button>
+ <button class="top-btn btn-review" onclick="setMode('review')">📅 今日の復習</button>
+ <button class="top-btn btn-incorrect" onclick="setMode('incorrect')">🎯 未正解</button>
+ </div>
+
+ <div id="flashcard">
+ <div id="front-side">
+ <div class="date-badge" id="date-badge">最終回答日：未回答</div>
+ <div class="srs-badge" id="srs-badge"></div>
+ <div class="english-text" id="front-eng-content"></div>
+ <button id="play-audio-btn">🔊 音声を聴く</button>
+ </div>
+
+ <div id="back-side">
+ <div class="english-text-back" id="back-eng-content"></div>
+ <div class="japanese-text" id="jap-content"></div>
+ <div class="note-box" id="note-content"></div>
+ </div>
+ </div>
+
+ <div class="controls" id="controls-front">
+ <button id="prev-btn" class="action-btn" onclick="prevCard()">◀ 前へ</button>
+ <button id="flip-btn" class="action-btn" onclick="flipCard()">🔄 裏返す</button>
+ <button id="next-btn" class="action-btn" onclick="nextCard()">次へ ▶</button>
+ </div>
+
+ <div class="controls" id="controls-back" style="display: none;">
+ <button id="back-to-front-btn" class="eval-btn" onclick="returnToFront()">🔙 表面に戻る</button>
+ <button id="wrong-btn" class="eval-btn" onclick="markIncorrect()">❌ 覚えてない</button>
+ <button id="correct-btn" class="eval-btn" onclick="markCorrect()">◯ 完璧！</button>
+ </div>
+
+ <script>
+ const cardsData = [
+{"en": "We should go. We should go.", "jp": "行くべきだ。もう行こう。[cite: 3]", "note": "We should go. はその場を急いで立ち去りたい時の超定番口語表現。[cite: 3]"},
+{"en": "- Ring the bell. - What the hell?", "jp": "- （トッド）チャイムを鳴らせよ。 - （ダーク）一体全体どういうことだ？[cite: 3]", "note": "What the hell? は予想外の出来事に対する強い困惑を表す感嘆詞。[cite: 3]"},
+{"en": "You said you were gonna stay in the car.", "jp": "車に残ってるって言っただろ。[cite: 3]", "note": "be gonna + 動詞原形（be going to の口語形）の過去形 were gonna（〜するつもりだった）。[cite: 3]"},
+{"en": "- I lied, though. - What?", "jp": "- （ダーク）嘘をついたんだよ。 - （トッド）はあ？[cite: 3]", "note": "文末の though は「〜だけどね、やっぱり」という口語の軽いつなぎ言葉。[cite: 3]"},
+{"en": "Did you see how I snuck up? I was trained as a ninja by the CIA.", "jp": "僕がどうやって忍び寄ったか見たかい？ 僕はCIAで忍者として訓練を受けたんだ。[cite: 3]", "note": "sneak up（忍び寄る）の過去形 snuck up。ダークの突飛で嘘くさい大風呂敷。[cite: 3]"},
+{"en": "- What? - Sorry, that's a lie, too.", "jp": "- （トッド）何だって？ - （ダーク）ごめん、それも嘘だ。[cite: 3]", "note": "that's a lie, too. と即座に撤回するダークのユーモラスなキャラクター性。[cite: 3]"},
+{"en": "Just go back to the car.", "jp": "とにかく車に戻ってくれ。[cite: 3]", "note": ""},
+{"en": "- Todd, you came. - Yeah, of course I came.", "jp": "- （アマンダ）トッド、来てくれたのね。 - （トッド）ああ、もちろん来たよ。[cite: 3]", "note": "of course は「もちろん、当然さ」。[cite: 3]"},
+{"en": "- What, you didn't think I would come? - Who's this?", "jp": "- （トッド）何だよ、俺が来ないとでも思ってたのか？ - （アマンダ）この人は誰？[cite: 3]", "note": ""},
+{"en": "It's, uh... It's Dirk Gently.", "jp": "こいつは、ええと……ダーク・ジェントリーだ。[cite: 3]", "note": ""},
+{"en": "Dirk-- Okay, hi.", "jp": "ダーク……ええと、ハーイ。[cite: 3]", "note": ""},
+{"en": "- Sorry. I'm Amanda. - Hi.", "jp": "- （アマンダ）ごめんなさい。アマンダよ。 - （ダーク）ハーイ。[cite: 3]", "note": ""},
+{"en": "- No, don't. - Don't say hello?", "jp": "- （トッド）よせ、挨拶するな。 - （ダーク）挨拶しちゃダメなのかい？[cite: 3]", "note": ""},
+{"en": "Hello, Amanda.", "jp": "こんにちは、アマンダ。[cite: 3]", "note": ""},
+{"en": "Are you friends?", "jp": "あなたたち、お友達なの？[cite: 3]", "note": ""},
+{"en": "- No. - Yes.", "jp": "- （トッド）違う。 - （ダーク）そうだよ。[cite: 3]", "note": ""},
+{"en": "- No. - Yes.", "jp": "- （トッド）違うって。 - （ダーク）そうだとも。[cite: 3]", "note": ""},
+{"en": "- No. - Yes.", "jp": "- （ダーク）違う。 - （トッド）そうなんだ。[cite: 3]", "note": ""},
+{"en": "- No. Yes. No. - We're very good friends.", "jp": "- （トッド）いや、ええと、違う。 - （ダーク）僕たちは大親友さ。[cite: 3]", "note": "口論の途中で「Yes/No」が入れ替わり混乱するテンポの良いコメディ対話。[cite: 3]"},
+{"en": "Ow!", "jp": "痛っ！[cite: 3]", "note": ""},
+{"en": "You're a terrible assis-friend.", "jp": "君は酷い助手兼友人（アシス・フレンド）だな。[cite: 3]", "note": "assistant と friend を合体させたダーク特有の造語 assis-friend。[cite: 3]"},
+{"en": "Seattle police ruled the death", "jp": "シアトル警察は殺害されたと判断しました、[cite: 3]", "note": "rule はここでは動詞で「（公式に）判定を下す、判決を出す」。[cite: 3]"},
+{"en": "of billionaire entrepreneur Patrick Spring and several others an animal attack", "jp": "大富豪の起業家パトリック・スプリングと数名の死亡について、当初報じられた殺人ではなく動物による襲撃と判定し、[cite: 3]", "note": "billionaire entrepreneur は「大富豪の起業家」。rule A B で「AをBと判定する」。[cite: 3]"},
+{"en": "rather than a murder as was initially reported,", "jp": "当初報道されたような殺人事件ではなく、[cite: 3]", "note": "rather than... は「〜ではなく、〜というよりむしろ」。initially は「当初は、最初は」。[cite: 3]"},
+{"en": "though the nature of the animal remains undisclosed at this time.", "jp": "ただし、動物の種類（性質）については現時点では公表されていません。[cite: 3]", "note": "undisclosed は「未公表の、明かされていない」。at this time は「現時点で」。[cite: 3]"},
+{"en": "Sources within the police department will neither confirm nor deny...", "jp": "警察関係者の情報筋は、肯定も否定もしない意向です……[cite: 3]", "note": "neither confirm nor deny は報道・公式発表で超頻出の「ノーコメント（肯定も否定もしない）」という重要フレーズ。[cite: 3]"},
+{"en": "...whether the tragic incident bears any connection to the recent disappearance", "jp": "この悲劇的な事件が、最近の失踪事件と何らかの関連があるかどうかについて……[cite: 3]", "note": "bear connection to... は「〜と関連・関係がある」という少し硬い重要表現。[cite: 3]"},
+{"en": "of Spring's daughter, heiress Lydia Spring, now missing for over four days.", "jp": "スプリングの娘であり全財産相続人であるリディア・スプリングが4日以上失踪している件と……[cite: 3]", "note": "heiress は「（女性の）相続人、令嬢」。[cite: 3]"},
+{"en": "Do you have any friends who can come by", "jp": "立ち寄って掃除を手伝ってくれる友達とかはいないのか？[cite: 3]", "note": "come by は「（人の家などに）立ち寄る」。[cite: 3]"},
+{"en": "and just help you with this, cleaning up?", "jp": "部屋の後片付けを助けてくれるような？[cite: 3]", "note": "help A with B は「AのBを手伝う」。[cite: 3]"},
+{"en": "It's hard to keep friends when you can't go outside without worrying a gust of wind will knock you down.", "jp": "一陣の風で吹き飛ばされるのを心配せずに外にも出られないのに、友達を維持するなんて難しいわよ。[cite: 3]", "note": "gust of wind は「一陣の風、突風」。knock down は「吹き飛ばす、倒す」。[cite: 3]"},
+{"en": "I barely get out of the house anymore.", "jp": "もうめったに家から出られないの。[cite: 3]", "note": "barely は「めったに〜ない、かろうじて」。not ... anymore で「もう〜ない」。[cite: 3]"},
+{"en": "Why don't you move back in with Mom and Dad?", "jp": "実家に戻って父さんと母さんと暮らしたらどうだ？[cite: 3]", "note": "Why don't you...? は「〜したらどうだ？」という定番の提案表現。[cite: 3]"},
+{"en": "- Maybe they can help you. - You know they're broke, Todd.", "jp": "- （トッド）二人が助けてくれるかもしれないろ。 - （アマンダ）二人が一文無しなの知ってるでしょ、トッド。[cite: 3]", "note": "broke は「一文無しの、破産した」という日常会話の重要形容詞。[cite: 3]"},
+{"en": "I would just be a burden on them.", "jp": "二人の重荷（負担）になるだけよ。[cite: 3]", "note": "burden on... は「〜の重荷、負担」。[cite: 3]"},
+{"en": "- I'm a burden on everyone. - What's wrong with you, exactly?", "jp": "- （アマンダ）私はみんなの重荷なの。 - （ダーク）君は正確にはどこが悪いんだい？[cite: 3]", "note": "What's wrong with you? は「どこが悪いの？/どうしたの？」。ここでのダークの質問は純粋な医学的疑問。[cite: 3]"},
+{"en": "- I have pararibulitus. - Ah. Of course.", "jp": "- （アマンダ）パラリブリティス（※架空の神経疾患）を患ってるの。 - （ダーク）あー、なるほど。もちろんか。[cite: 3]", "note": ""},
+{"en": "What's that?", "jp": "それは何だい？[cite: 3]", "note": ""},
+{"en": "- Who are you? - I'm Dirk Gently. I'm a private detective.", "jp": "- （アマンダ）あなた誰なの？ - （ダーク）僕はダーク・ジェントリー。私立探偵さ。[cite: 3]", "note": "private detective（私立探偵）。[cite: 3]"},
+{"en": "You don't look like a private detective.", "jp": "私立探偵には見えないけど。[cite: 3]", "note": "look like... は「〜のように見える」。[cite: 3]"},
+{"en": "No private detective looks like a private detective. That's one of the first rules of private detection.", "jp": "私立探偵に見える私立探偵なんていないよ。それが探偵業の鉄則の一つさ。[cite: 3]", "note": "ダーク独特の逆説的な言いまわし。[cite: 3]"},
+{"en": "But if no private detective looks like a private detective,", "jp": "でも、もし誰も私立探偵に見えないのなら、[cite: 3]", "note": ""},
+{"en": "how does a private detective know what he shouldn't look like?", "jp": "私立探偵はどうやって「どんな姿に見えてはいけないか」を知るの？[cite: 3]", "note": "ダークの屁理屈の矛盾を突くアマンダの鋭い突っ込み。[cite: 3]"},
+{"en": "It's a nerve disease.", "jp": "神経の病気なんだ。[cite: 3]", "note": "nerve disease（神経疾患）。[cite: 3]"},
+{"en": "It causes your brain to misinterpret certain inputs,", "jp": "脳が特定の刺激（入力）を誤解するように引き起こして、[cite: 3]", "note": "cause A to + 動詞原形 で「Aに〜させる、引き起こす」。misinterpret は「誤解する、誤って解釈する」。[cite: 3]"},
+{"en": "and you actually have hallucinations that feel real,", "jp": "実際には本物のように感じられる幻覚を起こすんだ、[cite: 3]", "note": "hallucination は「幻覚」。[cite: 3]"},
+{"en": "and in most cases, very painful.", "jp": "そして大抵の場合、ものすごく激痛を伴う。[cite: 3]", "note": "in most cases は「大抵の場合、多くの場合」。[cite: 3]"},
+{"en": "So, that means...", "jp": "つまり、それって……[cite: 3]", "note": ""},
+{"en": "Water on your hand could feel like fire.", "jp": "手にかかった水が火のように感じられたり。[cite: 3]", "note": "feel like... は「〜のように感じられる」。[cite: 3]"},
+{"en": "Your shoe on your foot could feel like it was crushing it.", "jp": "履いている靴が足を叩き潰しているように感じられたり。[cite: 3]", "note": "crush は「押しつぶす、粉砕する」。[cite: 3]"},
+{"en": "- Breathing could feel like drowning. - I'm sorry. That's terrible.", "jp": "- （トッド）呼吸することが溺れているように感じられたりする。 - （ダーク）お気の毒に。それは痛ましいね。[cite: 3]", "note": "drown は「溺れる、溺死する」。[cite: 3]"},
+{"en": "And so interesting.", "jp": "そして、もの凄く興味深いな。[cite: 3]", "note": "同情しつつも「興味深い（interesting）」と言ってしまう不躾なダーク。[cite: 3]"},
+{"en": "Yeah, well, it makes it hard to not be scared all the time.", "jp": "ええ、まあ、だから常に怯えずにいるのは難しいの。[cite: 3]", "note": "make it adj to...（仮目的語構文）。all the time（常に、四六時中）。[cite: 3]"},
+{"en": "But Todd had it and he got better, so... I need to take my meds and eat healthy.", "jp": "でもトッドも昔これにかかって治ったから……私は薬を飲んで健康的に食べなきゃ。[cite: 3]", "note": "meds（medications の口語略称）。get better は「（病気などが）良くなる、治る」。[cite: 3]"},
+{"en": "So, then why do you stay in the house?", "jp": "じゃあ、何で家に閉じこもってるの？[cite: 3]", "note": ""},
+{"en": "What?", "jp": "え？[cite: 3]", "note": ""},
+{"en": "If the disease is in you, why does it matter where you go?", "jp": "病気が君の「中」にあるなら、どこへ行こう関係ないじゃないか？[cite: 3]", "note": "Why does it matter...? は「〜が何だというんだ？/〜がどう重要なんだ？」。ダークの核心を突く（しかしデリカシーのない）質問。[cite: 3]"},
+{"en": "Hey, uh, Amanda, do you wanna jam?", "jp": "なあ、アマンダ、セッション（演奏）しないか？[cite: 3]", "note": "jam は音楽仲間で「即興演奏（セッション）する」という日常口語動詞。[cite: 3]"},
+{"en": "Yeah. Of course.", "jp": "ええ。もちろん。[cite: 3]", "note": ""},
+{"en": "Cool. I'll be there in a minute.", "jp": "よし。すぐ行くよ。[cite: 3]", "note": "in a minute は「すぐに、間もなく」。[cite: 3]"},
+{"en": "- Why are you doing this? - I'm on a case.", "jp": "- （トッド）何でこんなことするんだ？ - （ダーク）捜査中（事件の最中）なんだよ。[cite: 3]", "note": "be on a case は「事件を担当している、捜査中である」。[cite: 3]"},
+{"en": "My primary method of investigation is to follow someone who looks like they know where they're going.", "jp": "僕の主な捜査手法は、「どこへ向かっているか分かっていそうな人」の後をついていくことなんだ。[cite: 3]", "note": "全体論的探偵ダークのめちゃくちゃな捜査ポリシー。[cite: 3]"},
+{"en": "Is it that important you not be identified as my friend, that you felt the need to argue?", "jp": "僕の友達だと思われないことがそんなに重要で、わざわざ反論する必要を感じたのかい？[cite: 3]", "note": "be identified as... は「〜と特定される、見なされる」。[cite: 3]"},
+{"en": "You are an insane person who's insinuated himself into my life in a moment of desperation.", "jp": "お前は俺が絶望している隙につけ込んで、俺の人生に勝手に入り込んできた頭の狂った奴だ。[cite: 3]", "note": "insinuate oneself into... は「（人・場所に）巧妙に入り込む、巧みに入り込む」という上級表現。moment of desperation は「絶望の瞬間」。[cite: 3]"},
+{"en": "I think you're an insane person who has insinuated himself into being my combination assistant and best friend.", "jp": "僕に言わせれば、君こそが巧みに入り込んで僕の「助手兼親友」の座に収まった狂人だと思うけどね。[cite: 3]", "note": "トッドの非難をそのままオウム返しにして返すダークのサカズム。[cite: 3]"},
+{"en": "But that's-- it's-- Okay, that is not what's happening.", "jp": "だけどそれは――おい、そんなことは起きてないぞ。[cite: 3]", "note": ""},
+{"en": "I have the primary and the secondary in my sights.", "jp": "メインの標的とサブの標的を照準に捉えました。[cite: 3]", "note": "in my sights は「視界・照準内に収めている」。軍事・スナイパー用語。[cite: 3]"},
+{"en": "I thought we were clear that the rifle isn't necessary.", "jp": "ライフルは必要ないことで合意（納得）していたはずだが。[cite: 3]", "note": "I thought we were clear that... は「〜ということでお互い納得していたはずだ」という強い確認口語表現。[cite: 3]"},
+{"en": "Yeah, but in the mishkin parambuler,", "jp": "ええ、でも「ミシュキン・パラムビューラー（※言い間違え）」には、[cite: 3]", "note": ""},
+{"en": "it said that we have to prevent all aggressive action against the primary.", "jp": "メイン標的へのあらゆる攻撃的行動を阻止しなければならないと書いてありました。[cite: 3]", "note": "prevent A against B（Bに対するAを阻止する）。[cite: 3]"},
+{"en": "- The what? - The mission parameters.", "jp": "- （ボス）何だって？ - （監視員）「ミッション・パラメータ（作戦条件）」です。[cite: 3]", "note": "mission parameters（作戦パラメータ）をガムのせいで言い間違える部下。[cite: 3]"},
+{"en": "The gum went weird in my mouth, sir. It made my tongue do a weird move and say stuff wrong.", "jp": "口の中でガムが変な感じになったんです、サー。舌が変な動きをして変な発音になっちゃいました。[cite: 3]", "note": "言い訳としてあまりに間抜けな告白。[cite: 3]"},
+{"en": "What branch did they assign you to me from?", "jp": "お前はどの部隊（部門）から俺の下に割り振られてきたんだ？[cite: 3]", "note": "branch（部門、軍の兵科）。assign A to B（AをBに配属する）。[cite: 3]"},
+{"en": "Provisional. They said you didn't have the budget for the op.", "jp": "暫定（臨時）部隊です。この作戦（op）には予算がないと言われました。[cite: 3]", "note": "provisional（暫定の、臨時の）。op は operation（作戦）の略。[cite: 3]"},
+{"en": "Our goal is to observe and protect the primary.", "jp": "俺たちの目標は、メイン標的を監視し保護することだ。[cite: 3]", "note": "observe and protect（監視し保護する）。[cite: 3]"},
+{"en": "Not to kill anyone.", "jp": "誰も殺すことじゃない。[cite: 3]", "note": ""},
+{"en": "Right. Understood.", "jp": "了解です。理解しました。[cite: 3]", "note": ""},
+{"en": "I've got a shot.", "jp": "狙撃可能です（撃てます）。[cite: 3]", "note": "have a shot はスナイパーの「狙撃可能だ」という定番表現。[cite: 3]"},
+{"en": "- It's okay. It's okay. - You okay?", "jp": "- （トッド）大丈夫だ、大丈夫。 - （ダーク）君は大丈夫かい？[cite: 3]", "note": ""},
+{"en": "Back off, okay? Back off!", "jp": "下がってくれ、いいか？ 引っ込んでろ！[cite: 3]", "note": "back off は「（身を）引く、後ろに下がる、干渉をやめる」という超頻出命令表現。[cite: 3]"},
+{"en": "Thank you.", "jp": "ありがとう。[cite: 3]", "note": ""},
+{"en": "- So, you pay for her medication? - I did.", "jp": "- （ダーク）で、君が妹の薬代を払ってるのかい？ - （トッド）払っていたよ。[cite: 3]", "note": "I did.（過去形）で「以前は払っていた（今はもう払えない）」という含み。[cite: 3]"},
+{"en": "- What's changed? - That was my last $300.", "jp": "- （ダーク）何が変わったんだい？ - （トッド）さっき渡したのが俺の最後の300ドルだった。[cite: 3]", "note": ""},
+{"en": "I now literally have no money. None.", "jp": "俺は今、文字通り一分も金がないんだ。全無だ。[cite: 3]", "note": "literally（文字通り、マジで）。None. で強調。[cite: 3]"},
+{"en": "I don't understand.", "jp": "理解できないな。[cite: 3]", "note": ""},
+{"en": "You've lost your job. You've got that nut Dorian chasing you around.", "jp": "仕事を失い、あのイカれたドリアンに追い回されている。[cite: 3]", "note": "nut はイカれた奴、気違い（口語スラング）。[cite: 3]"},
+{"en": "Why give her all of your money?", "jp": "何で手持ちの金を全部彼女に渡すんだい？[cite: 3]", "note": "Why + 動詞原形...?（なぜ〜するのか？理解できないというニュアンス）。[cite: 3]"},
+{"en": "- Surely-- - A disease runs in my family.", "jp": "- （ダーク）まさか…… - （トッド）病気が俺の家系に血筋として流れてるんだ。[cite: 3]", "note": "run in the family は「（病気や性格などが）家系・血筋に伝わっている」という超重要慣用句。[cite: 3]"},
+{"en": "It has for five generations.", "jp": "5世代にわたってな。[cite: 3]", "note": ""},
+{"en": "- Pararibulitus? - Yeah, right.", "jp": "- （ダーク）パラリブリティスかい？ - （トッド）ああ、そうだ。[cite: 3]", "note": ""},
+{"en": "- How did you pay for treatment? You don't seem-- - Our parents.", "jp": "- （ダーク）どうやって治療費を払ったんだ？ 君はそんな風には…… - （トッド）親だよ。[cite: 3]", "note": ""},
+{"en": "I was in college. They had more money back then.", "jp": "俺が大学時代だった。当時は両親もまだ金があったんだ。[cite: 3]", "note": "back then は「当時は、その昔は」。[cite: 3]"},
+{"en": "By the time I'd recovered, my treatments had pretty much depleted all their savings.", "jp": "俺が回復した頃には、俺の治療費で両親の貯金はほとんど使い果たされていた。[cite: 3]", "note": "by the time...（〜する頃には）。deplete は「（貯金や資源を）使い果たす、枯渇させる」という重要動詞。[cite: 3]"},
+{"en": "- It's good of you to help. - She's my sister.", "jp": "- （ダーク）助けてあげるなんて偉いね。 - （トッド）妹だからな。[cite: 3]", "note": "It's good of you to...（〜してくれるなんて親切だ/感心だ）。[cite: 3]"},
+{"en": "Every time I see her, she looks at me and thinks...", "jp": "妹に会うたび、俺を見て妹は思うんだ……[cite: 3]", "note": "every time... は「〜するたびに」（whenever と同義）。[cite: 3]"},
+{"en": "She thinks maybe she can get better, too.", "jp": "自分もきっと良く（回復）なれるんじゃないかって。[cite: 3]", "note": ""},
+{"en": "Well, isn't there a chance she will, though? If you did?", "jp": "でも、君が治ったんなら、彼女も治る可能性があるんじゃないかい？[cite: 3]", "note": "isn't there a chance that...?（〜という可能性はないかい？）。[cite: 3]"},
+{"en": "Let's-- Can we just be quiet for the drive?", "jp": "なあ……ドライブの間は静かにしててくれないか？[cite: 3]", "note": "これ以上過去の話をしたくないトッドの制止。[cite: 3]"},
+{"en": "Probably should've seen this one coming.", "jp": "こうなることを予見しておくべきだったわね。[cite: 3]", "note": "should have seen A coming（Aが来る/起きるのを予見・覚悟しておくべきだった）。過去の反省を表す完了形仮定法。[cite: 3]"},
+{"en": "Like the asteroid that killed the dinosaurs.", "jp": "恐竜を絶滅させた小惑星みたいに。[cite: 3]", "note": "asteroid（小惑星）。束縛されているファラ独白。[cite: 3]"},
+{"en": "How could I have known?", "jp": "どうやって知り得たっていうの？[cite: 3]", "note": "How could I have known?（私がどうやって知ることができたというの？＝知る由もなかった）。[cite: 3]"},
+{"en": "There's no way I could have known-- What?", "jp": "私に分かりっこなかった……え？[cite: 3]", "note": "There's no way...（〜なわけがない、あり得ない）。[cite: 3]"},
+{"en": "I'm coming to get you, Lydia. I am coming to get you, okay?", "jp": "今助けに行くからね、リディア。助けに行くから、いい？[cite: 3]", "note": "come to get someone（人を迎えに行く/助けに行く）。[cite: 3]"},
+{"en": "I'm coming to get you!", "jp": "絶対に助けに行くから！[cite: 3]", "note": ""},
+{"en": "- What? Why? No, just leave me alone. - I live here now.", "jp": "- （トッド）何でだよ？ 頼むから放っておいてくれ。 - （ダーク）僕は今ここに住んでるんだよ。[cite: 3]", "note": "leave me alone は「構わないでくれ、一人にしてくれ」の超重要表現。[cite: 3]"},
+{"en": "Well, why do you think I was talking to Dorian? Did you not hear my voice?", "jp": "僕がドリアンと話してたのを何だと思ってたんだい？ 僕の声が聞こえなかったかい？[cite: 3]", "note": ""},
+{"en": "I'm not from here. I'm from a totally different place.", "jp": "僕はこの国の人間じゃない。全く違う場所の出身なんだ。[cite: 3]", "note": ""},
+{"en": "England.", "jp": "イギリスさ。[cite: 3]", "note": ""},
+{"en": "Screw this.", "jp": "ふざけるな（もう知るか）。[cite: 3]", "note": "Screw this. は「クソくらえ、冗談じゃない」という嫌気がさした時の口語強意語。[cite: 3]"},
+{"en": "- Shit, sorry. - Ow! Aha!", "jp": "- （トッド）くそっ、すまん。 - （ダーク）痛っ！ あはは！[cite: 3]", "note": ""},
+{"en": "Hey. That's mine.", "jp": "おい、それは俺のだ。[cite: 3]", "note": ""},
+{"en": "What do you want now?", "jp": "今度は何が望みなんだ？[cite: 3]", "note": ""},
+{"en": "I need you to work with me. I want to discuss the case.", "jp": "君に協力してほしいんだ。事件について話し合いたい。[cite: 3]", "note": "I need you to + 動詞原形（君に〜してもらいたい）。[cite: 3]"},
+{"en": "- What case? - The death of Patrick Spring.", "jp": "- （トッド）何の事件だ？ - （ダーク）パトリック・スプリングの死だよ。[cite: 3]", "note": ""},
+{"en": "The incident at the Perriman Grand?", "jp": "ペリマン・グランドでのあの出来事か？[cite: 3]", "note": ""},
+{"en": "I was hired to investigate it by the victim.", "jp": "僕は被害者本人から調査を依頼（雇用）されたんだよ。[cite: 3]", "note": "be hired to... by...（〜によって〜するよう雇われる）。[cite: 3]"},
+{"en": "Patrick Spring, the rich guy? Wait, he's the one who died at the hotel?", "jp": "パトリック・スプリングってあの大富豪か？ 待てよ、ホテルで死んだのは彼なのか？[cite: 3]", "note": ""},
+{"en": "That's right, and he hired me, well above my normal rate,", "jp": "そうだとも。そして彼は僕の通常報酬を遥かに超える額で僕を雇ったんだ、[cite: 3]", "note": "well above...（〜を大幅に上回って）。rate（料金、報酬額）。[cite: 3]"},
+{"en": "to investigate his own death a full six weeks before it even happened.", "jp": "事件が起きる丸々6週間も前に、自分自身の死を捜査させるためにね。[cite: 3]", "note": "a full six weeks before...（〜の丸々6週間前に）。自らの死を事前依頼していたというミステリーの核心。[cite: 3]"},
+{"en": "I wouldn't have taken the case except, come on, animal attack?", "jp": "普段なら引き受けない事件だけど、だって考えてもみなよ、動物の襲撃だぜ？[cite: 3]", "note": "I wouldn't have taken...（〜でなければ引き受けなかっただろう。仮定法過去完了）。[cite: 3]"},
+{"en": "Seattle? A guy predicting his own death?", "jp": "シアトルで？ 自分の死を予知した男だぞ？[cite: 3]", "note": ""},
+{"en": "- Pretty interesting stuff. - And how am I involved in any of this?", "jp": "- （ダーク）めちゃくちゃ興味深いネタだろ。 - （トッド）で、俺がどうこれに関係してるってんだ？[cite: 3]", "note": "be involved in...（〜に関与している、巻き込まれている）。[cite: 3]"},
+{"en": "You were there the day it happened. They used your key.", "jp": "事件が起きた日に君は現場にいた。犯人は君のマスタキーを使った。[cite: 3]", "note": ""},
+{"en": "The cases are connected.", "jp": "事件は繋がっているんだ。[cite: 3]", "note": ""},
+{"en": "All cases are connected.", "jp": "すべての事件は繋がっているのさ。[cite: 3]", "note": ""},
+{"en": "Have you ever actually solved a case?", "jp": "あんた、実際これまでに事件を解決したことあるのか？[cite: 3]", "note": "Have you ever actually solved...?（今までに実際に解決したことがあるか？）。[cite: 3]"},
+{"en": "Sure. Tons. Well, some. Well, a few.", "jp": "もちろんさ。山ほどね。まあ、いくつか。まあ、少しだけ。[cite: 3]", "note": "Tons -> some -> a few と徐々に規模をトーンダウンさせるダークのユーモア。[cite: 3]"},
+{"en": "A bit about a sofa, a thing with Thor--", "jp": "ソファにまつわる小事件とか、トール（北欧神）の一件とか――[cite: 3]", "note": "原作者ダグラス・アダムスの原作小説へのイースターエッグ（『Dirk Gently's Holistic Detective Agency』及び『The Long Dark Tea-Time of the Soul』）。[cite: 3]"},
+{"en": "Thor?", "jp": "トールだって？[cite: 3]", "note": ""},
+{"en": "He's not nearly as good-looking as people say.", "jp": "みんなが言うほどイケメンじゃないよ。[cite: 3]", "note": "not nearly as ... as（全然〜ほど...ではない）。映画『マイティ・ソー』のイメージに対する皮肉。[cite: 3]"},
+{"en": "- It's a funny story-- - Listen, you seem like a nice guy.", "jp": "- （ダーク）面白い話なんだけど―― - （トッド）聞けよ、あんたは良い奴に見える。[cite: 3]", "note": ""},
+{"en": "Or not nice, but you seem like a guy, okay?", "jp": "あるいは良くはないが、まあ一人の男には見える、いいか？[cite: 3]", "note": ""},
+{"en": "You seem like a guy, but I can't do this.", "jp": "男には見えるが、俺はつきあいきれない。[cite: 3]", "note": ""},
+{"en": "I'm a murder suspect, okay? I'm broke, and--", "jp": "俺は殺人容疑者なんだぞ？ 金もないし――[cite: 3]", "note": ""},
+{"en": "Don't be silly. Money won't be a problem for you soon.", "jp": "バカ言っちゃいけない。金なんてすぐ君の心配事じゃなくなるよ。[cite: 3]", "note": "Don't be silly.（バカなこと言うな/ふざけないで）。[cite: 3]"},
+{"en": "How do you figure that?", "jp": "どうしてそう言える（判断する）んだ？[cite: 3]", "note": "How do you figure that? は「どうしてそう思うんだ？/どういう計算でそうなるんだ？」という超頻出疑問口語。[cite: 3]"},
+{"en": "Now that I've told you you're working the case, you're working the case.", "jp": "僕が君に事件を担当してるって言った以上、君は事件を担当してるのさ。[cite: 3]", "note": "Now that...（〜した以上は、〜である今や）。[cite: 3]"},
+{"en": "The universe will make you a part of this whether you are complicit or not.", "jp": "君が自発的（共犯的）であろうとなかろうと、宇宙が君をこの事件の一部にするんだよ。[cite: 3]", "note": "complicit は「共犯関係にある、加担している」。whether ... or not（〜であろうとなかろうと）。[cite: 3]"},
+{"en": "You are now a vital part of the investigation.", "jp": "君は今や捜査の極めて重要な一部なんだ。[cite: 3]", "note": "vital（極めて重要な、不可欠な）。[cite: 3]"},
+{"en": "- Well, so, who's gonna pay me. You? - Probably not.", "jp": "- （トッド）じゃあ、誰が俺に給料を払うんだ？ あんたか？ - （ダーク）たぶん僕じゃないね。[cite: 3]", "note": ""},
+{"en": "But you will investigate, even if you don't mean to,", "jp": "だけど君は捜査することになる、たとえそのつもりがなくてもね、[cite: 3]", "note": "even if you don't mean to（たとえ意図していなくても）。[cite: 3]"},
+{"en": "and you will be compensated, even if you haven't technically earned it.", "jp": "そして報酬を得ることになる、厳密には君が稼ぎ出したわけじゃなくてもね。[cite: 3]", "note": "compensate（補償する、報酬を払う）。[cite: 3]"},
+{"en": "Oh, no. Things are about to get ugly.", "jp": "うわあ、厄介な事態（不快な修羅場）になりそうだぞ。[cite: 3]", "note": "be about to + 動詞原形（まさに〜しようとしている）。get ugly（（状況が）悪化する、険悪・醜悪になる）。[cite: 3]"},
+{"en": "Stay frosty.", "jp": "油断するなよ（冷静を保て）。[cite: 3]", "note": "Stay frosty. は軍隊・警察スラングで「冷静でいろ、警戒を怠るな」。[cite: 3]"},
+{"en": "Project Incubus.", "jp": "プロジェクト・インキュバス（※ロウディ3のコードネーム）。[cite: 3]", "note": ""},
+{"en": "Shit.", "jp": "くそっ。[cite: 3]", "note": ""},
+{"en": "Ouch!", "jp": "痛っ！[cite: 3]", "note": ""},
+{"en": "Stupid traitor bed.", "jp": "バカな裏切りベッドめ。[cite: 3]", "note": "ソファベッドに指を挟まれたトッドの悪態。traitor（裏切り者）。[cite: 3]"},
+{"en": "I'm sick of the games! No chess, no checkers, no \"Monopoly\"!", "jp": "まどろっこしいゲームにはうんざりだ！ チェスもチェッカーもモノポリーもいらん！[cite: 3]", "note": "be sick of...（〜にはうんざり・飽き飽きしている）。[cite: 3]"},
+{"en": "What is this? What is happening?", "jp": "何なんだこれは？ 一体何が起きているんだ？[cite: 3]", "note": ""},
+{"en": "- The Rowdy 3. - Let's go!", "jp": "- （トッド）「ロウディ3」だ。 - （ダーク）逃げるぞ！[cite: 3]", "note": ""},
+{"en": "- There are four of them. - I'm wildly aware.", "jp": "- （トッド）奴ら4人いるぞ！ - （ダーク）痛感してるよ！[cite: 3]", "note": "Rowdy 3 という名前なのに「4人」いることに対するツッコミ。wildly aware は「痛いほど分かっている」。[cite: 3]"},
+{"en": "They're after you, right? Come on, Dirk, please go.", "jp": "奴らの狙いはお前だろ？ 頼むからダーク、出て行ってくれ。[cite: 3]", "note": "be after someone は「（人）を追っている、狙っている」。[cite: 3]"},
+{"en": "- No. - Please, just go.", "jp": "- （ダーク）嫌だね。 - （トッド）頼むから行ってくれ。[cite: 3]", "note": ""},
+{"en": "Bad news delivery!", "jp": "不吉なお知らせ（バッドニュース）のお届けだ！[cite: 3]", "note": "宅配業者を気取った襲撃の威嚇文句。[cite: 3]"},
+{"en": "Hello.", "jp": "やあ。[cite: 3]", "note": ""},
+{"en": "What the hell is this new shit? Big D is gonna take care of business.", "jp": "この新しいバカげた状況は何だ？「ビッグD」が片付けてやる。[cite: 3]", "note": "take care of business（仕事を片付ける、ケジメをつける）。[cite: 3]"},
+{"en": "I'm a person of varied intuitions. I have a lot of feelings about a lot of things.", "jp": "僕は多様な直感を持つ人間でね。色々なことにたくさんの予感（感情）を抱くんだ。[cite: 3]", "note": ""},
+{"en": "They're rarely wrong, but rarely completely right.", "jp": "それらは滅多に間違っていないが、完全に正しいことも滅多にない。[cite: 3]", "note": "rarely（滅多に〜ない）。ダークの直感の曖昧さを認めるセリフ。[cite: 3]"},
+{"en": "That's a reality we're going to accept. Accepted? No? Yes? Doesn't matter.", "jp": "それが僕たちが受け入れるべき現実だ。受け入れたかい？ ダメ？ イエス？ どうでもいいか。[cite: 3]", "note": ""},
+{"en": "There's four men with baseball bats headed up the stairs right now to wreck your apartment.", "jp": "野球バットを持った4人の男たちが、君のアパートを破壊するために今階段を上がってきているよ。[cite: 3]", "note": "wreck（〜を破壊する、めちゃくちゃにする）。[cite: 3]"},
+{"en": "- No, no, no. - No, Todd, no!", "jp": "- （トッド）嘘だろ、やめてくれ。 - （ダーク）ダメだトッド、落ち着け！[cite: 3]", "note": ""},
+{"en": "- Please-- - I don't wanna be a part of this.", "jp": "- （トッド）頼むから――俺はこんなのに関わりたくない。[cite: 3]", "note": ""},
+{"en": "Just go before they--", "jp": "奴らが来る前に出て行ってくれ――[cite: 3]", "note": ""},
+{"en": "Ding-dong.", "jp": "ピンポーン。[cite: 3]", "note": ""},
+{"en": "- We are not professionals! - Shut your hole!", "jp": "- （ヴァンジ）俺たちはプロじゃない（無茶苦茶やるぞ）！ - （マーティン）お口を閉じろ！[cite: 3]", "note": "Shut your hole! は「口を慎め/黙れ」という粗野なスラング（hole = 口）。[cite: 3]"},
+{"en": "Before we tear it out your face and throw it in a dumpster.", "jp": "顔から口をちぎり取ってゴミ箱に放り込む前にな！[cite: 3]", "note": "dumpster（大型ゴミ箱）。暴力的脅迫。[cite: 3]"},
+{"en": "Help!", "jp": "助けてくれ！[cite: 3]", "note": ""},
+{"en": "- TV out! - There's garbage everywhere. What the--", "jp": "- （マーティン）テレビ撃破！ - （トッド）ゴミだらけだ。一体何が――[cite: 3]", "note": ""},
+{"en": "Television! I have had enough of this shit.", "jp": "テレビめ！ もうこんなゴミ（テレビ番組/文明）にはうんざりだ！[cite: 3]", "note": "have had enough of... で「〜にはもううんざりだ/飽き飽きだ」。[cite: 3]"},
+{"en": "Jesus, you gotta be kidding me.", "jp": "おいおい、冗談だろ。[cite: 3]", "note": "you gotta be kidding me は「冗談だろ/信じられない」という超定番呆れ口語。[cite: 3]"},
+{"en": "We got eyes on a gun, require backup at 515--", "jp": "銃を確認した、515号室に応援を要請――[cite: 3]", "note": "have eyes on...（〜を目視・確認している）。[cite: 3]"},
+{"en": "-\"Request\" backup. -Request backup at 515 Ridgely Lane.", "jp": "- （ジマーフィールド）「リクエスト（要請）」だ。 - （エステベス）リジリー・レーン515号室に応援要請。[cite: 3]", "note": ""},
+{"en": "Dorian's gonna kick your ass!", "jp": "ドリアン様がお前らのケツを引っ叩いてやる！[cite: 3]", "note": "kick one's ass（人をボコボコにする/痛い目にあわせる）。[cite: 3]"},
+{"en": "Shit, Alpha's in danger. We're live. Lock and load.", "jp": "くそっ、アルファ（標的）が危険だ。作戦開始だ。装填せよ。[cite: 3]", "note": "Lock and load. は軍隊スラングで「（銃の）安全装置を解除して装填せよ/準備完了せよ」。[cite: 3]"},
+{"en": "Okay. Lockers.", "jp": "よし、ロッカーだ。[cite: 3]", "note": ""},
+{"en": "Everything I own.", "jp": "俺の全財産が（全部壊された）。[cite: 3]", "note": "Everything I own.（自分の所有物すべて）。[cite: 3]"},
+{"en": "No.", "jp": "うそだろ。[cite: 3]", "note": ""},
+{"en": "Why?", "jp": "なんでなんだ？[cite: 3]", "note": ""},
+{"en": "- What did they do to you? - It's complicated.", "jp": "- （トッド）奴らはお前に何をしたんだ？ - （ダーク）話すと複雑なんだ。[cite: 3]", "note": "It's complicated. は説明が難しい時にお茶を濁す定番フレーズ。[cite: 3]"},
+{"en": "Where's my rent, Todd?!", "jp": "俺の家賃はどこだ、トッド？！[cite: 3]", "note": ""},
+{"en": "What did you guys do to this place?", "jp": "お前ら、この部屋をどうしやがった？！[cite: 3]", "note": ""},
+{"en": "Who were those guys?! You think they intimidate me?!", "jp": "さっきの連中は誰だ？！ 奴らが俺を脅せると思ってんのか？！[cite: 3]", "note": "intimidate は「（人を）脅す、怯えさせる」。[cite: 3]"},
+{"en": "- Dorian, just listen-- - No, too late.", "jp": "- （トッド）ドリアン、話を聞いてくれ―― - （ドリアン）いや、もう遅い。[cite: 3]", "note": ""},
+{"en": "Nobody makes a fool out of me. You think I'm stupid?!", "jp": "誰一人俺をバカ（愚か者）にすることはできないんだ。俺をマヌケだと思ってんのか？！[cite: 3]", "note": "make a fool out of someone（人をバカにする、担ぐ）。[cite: 3]"},
+{"en": "- Tell me you have a way out of this. - I'm very good at getting into situations.", "jp": "- （トッド）ここから抜け出す方法があると言ってくれ。 - （ダーク）僕は面倒な状況に陥るのはすごく得意なんだけどね。[cite: 3]", "note": "get into situations（窮地・状況に陥る）。[cite: 3]"},
+{"en": "I have more trouble getting out of them--", "jp": "そこから抜け出す（解決する）方により苦労するんだ――[cite: 3]", "note": "get out of...（〜から脱出する、逃れる）。ダークのおかしな自慢。[cite: 3]"},
+{"en": "Dirk, shut up! Just shut up!", "jp": "ダーク、黙れ！ とにかく黙ってくれ！[cite: 3]", "note": "shut up（黙れ）。[cite: 3]"},
+{"en": "I know what you did. I warned you.", "jp": "お前が何をしたか分かってるぞ。警告したはずだ。[cite: 3]", "note": "warn（〜に警告する）。[cite: 3]"},
+{"en": "Bye-bye, you thieving mother--", "jp": "さようならだ、この泥棒野郎――[cite: 3]", "note": "thieving（泥棒の、泥棒癖のある）。言葉の途中で撃ち抜かれる。[cite: 3]"},
+{"en": "Freeze. Freeze!", "jp": "動くな、動くな！[cite: 3]", "note": "Freeze! は警察・捜査官の「動くな、動くと撃つぞ！」という絶対命令。[cite: 3]"},
+{"en": "FBI. Freeze!", "jp": "FBIだ。動くな！[cite: 3]", "note": ""},
+{"en": "- Drop the gun. - No, you drop the gun.", "jp": "- （FBI）銃を捨てろ。 - （ドリアン）断る、お前こそ銃を捨てろ。[cite: 3]", "note": "Drop the gun.（銃を捨てろ/落とせ）。[cite: 3]"},
+{"en": "Drop it. Drop it. Drop your weapons.", "jp": "捨てろ。捨てろ。武器を捨てろ。[cite: 3]", "note": ""},
+{"en": "What is going on?!", "jp": "一体何がどうなっているんだ？！[cite: 3]", "note": "混乱の絶頂でのトッドの叫び。[cite: 3]"},
+{"en": "You okay?", "jp": "大丈夫か？[cite: 3]", "note": ""},
+{"en": "Find me! Find me!", "jp": "私を見つけて！ 私を見つけて！[cite: 3]", "note": ""},
+{"en": "I'm right here!", "jp": "私はここよ！[cite: 3]", "note": "監禁場所から叫ぶファラ。[cite: 3]"},
+{"en": "What now?", "jp": "今度は何だっていうんだ？[cite: 3]", "note": "What now? はあきれ果てた時の「次は何だ？/今度はどうした？」という口語。[cite: 3]"},
+{"en": "You're free to go. For now.", "jp": "お前らは釈放（解放）だ。今のところはな。[cite: 3]", "note": "free to go（釈放されて帰ってよい）。[cite: 3]"},
+{"en": "Really?", "jp": "本当に？[cite: 3]", "note": ""},
+{"en": "Scene techs are saying the death looks like an accident.", "jp": "現場鑑識班は、あの死（ドリアンの頭部暴発）は事故のように見えると言っている。[cite: 3]", "note": "電子レンジが暴発してドリアンが自滅した不条理な事故。[cite: 3]"},
+{"en": "For now.", "jp": "今のところはな。[cite: 3]", "note": ""},
+{"en": "Good news is FBI had surveillance on Dorian Ozman's house.", "jp": "朗報としては、FBIがドリアン・オズマンの家を監視（盗聴・追跡）していたことだ。[cite: 3]", "note": "have surveillance on...（〜を監視下に置いている）。[cite: 3]"},
+{"en": "They did? Uh... why?", "jp": "FBIが？ ええと……なぜ？[cite: 3]", "note": ""},
+{"en": "He sold a really incredible amount of drugs to an astonishing number of people.", "jp": "奴が恐ろしい量の薬物を、驚くべき数の人間に売ばさばいていたからさ。[cite: 3]", "note": "incredible amount of...（信じられないほどの量の）。astonishing number of...（驚くべき数の）。[cite: 3]"},
+{"en": "So, I'm not a suspect in anything?", "jp": "じゃあ、俺は何も容疑がかかってないんですか？[cite: 3]", "note": "suspect in...（〜の容疑者・疑いのある人物）。[cite: 3]"},
+{"en": "You're a person of interest, permanently,", "jp": "お前は「捜査参考人（重要参考人）」だよ、永久にね。[cite: 3]", "note": "person of interest は警察用語で「捜査参考人、マークしている人物」。[cite: 3]"},
+{"en": "even though you're not necessarily an interesting person.", "jp": "お前自身が特に「興味深い（魅力的）」人間ってわけじゃ全然ないけどな。[cite: 3]", "note": "not necessarily（必ずしも〜とは限らない）。person of interest（参考人）と interesting person（面白い人）をかけた警察官の皮肉。[cite: 3]"},
+{"en": "That feels unnecessarily rude.", "jp": "それは不必要に失礼に感じられますけど。[cite: 3]", "note": "unnecessarily rude（不必要に不躾・失礼な）。[cite: 3]"},
+{"en": "The police will determine the proper levels of antagonism", "jp": "警察が敵対心の適切なレベルを決定するんだよ、[cite: 3]", "note": "antagonism（敵対心、敵意）。[cite: 3]"},
+{"en": "toward a man now connected to four dead bodies...", "jp": "今や4つの死体に関連している男に対してね……[cite: 3]", "note": "connected to...（〜に関連している）。[cite: 3]"},
+{"en": "in two separate cases.", "jp": "2つの別々の事件でな。[cite: 3]", "note": ""},
+{"en": "The \"do not leave town\" order is still in effect.", "jp": "「街を離れるな」という命は現在も有効だ。[cite: 3]", "note": "in effect（（法律・命令などが）有効で、施行中で）。[cite: 3]"},
+{"en": "Do not leave town.", "jp": "街を離れるなよ。[cite: 3]", "note": ""},
+{"en": "Hey, you're not supposed to be down here.", "jp": "おい、あんたここは立入禁止だぞ。[cite: 3]", "note": "be supposed to...（〜することになっている）。[cite: 3]"},
+{"en": "Hermano Palacios?", "jp": "エルマーノ・パラシオスか？[cite: 3]", "note": "hermano はスペイン語で「兄弟/仲間」。[cite: 3]"},
+{"en": "- Yes? - Did you find a kitten?", "jp": "- （パリオス）はい？ - （リマー）子猫は見つかったか？[cite: 3]", "note": "kitten（子猫）。ミステリーの不気味な重要キーワード。[cite: 3]"},
+{"en": "- What? - In the penthouse, did you find a kitten?", "jp": "- （パリオス）何だって？ - （リマー）ペントハウスで子猫は見つかったか？[cite: 3]", "note": ""},
+{"en": "Kitten? Look, I don't know what you're talking about.", "jp": "子猫？ おい、あんたが何を言ってるのかさっぱり分からないよ。[cite: 3]", "note": "I don't know what you're talking about. は話が噛み合わない時の定番口語。[cite: 3]"},
+{"en": "You're sure you did not see a kitten?", "jp": "本当に子猫を見ていないんだな？[cite: 3]", "note": ""},
+{"en": "They let me out, too.", "jp": "僕も釈放してくれたよ。[cite: 3]", "note": "let A out（Aを外に出す/釈放する）。[cite: 3]"},
+{"en": "Must've been the CIA, always getting me out of things.", "jp": "CIAに違いないね、いつも僕をトラブルから救い出してくれるんだ。[cite: 3]", "note": "get A out of B（AをBから救い出す/脱出させる）。[cite: 3]"},
+{"en": "They didn't even mention the bloody Rowdy 3, but I...", "jp": "忌々しいロウディ3のことすら言及しなかった、だけど僕は……[cite: 3]", "note": "bloody はイギリス英語で「胸糞悪い、忌々しい」という強調表現。[cite: 3]"},
+{"en": "- I guess the CIA must've told them not to, which makes sense-- - Shut up. I don't care.", "jp": "- （ダーク）CIAが言うなと指示したのに違いない、辻褄が合う―― - （トッド）黙れ。どうでもいい。[cite: 3]", "note": "make sense は「筋が通る、理にかなう」。[cite: 3]"},
+{"en": "- Go away. - Need a ride?", "jp": "- （トッド）消失せろ。 - （ダーク）車に乗っていくかい？[cite: 3]", "note": "Go away.（立ち去れ、消えろ）。Need a ride?（乗せていこうか？）。[cite: 3]"},
+{"en": "Someone died tonight. They died right in front of us. That doesn't bother you?", "jp": "今夜人が死んだんだぞ。俺たちの真目の前で死んだんだ。何とも思わない（平気な）のか？！[cite: 3]", "note": "right in front of us（まさに俺たちの目の前で）。bother（（人の心を）苦しめる、悩ませる）。[cite: 3]"},
+{"en": "I think it might bother me more later, when I'm less... something.", "jp": "後になってからもっと堪えるかもしれないね、僕がもう少し……何か別の状態になった時に。[cite: 3]", "note": "ダーク独特の感情の遅延・自己防衛。[cite: 3]"},
+{"en": "Know why Dorian wanted the rent?", "jp": "なぜドリアンが家賃に執着してたか分かるか？[cite: 3]", "note": ""},
+{"en": "- Because he was crazy. - No, because I stole it from him.", "jp": "- （ダーク）イカれてたからだろ。 - （トッド）違う、俺が奴から盗んだからだ。[cite: 3]", "note": "トッドの衝撃の告白。[cite: 3]"},
+{"en": "Uh, what?", "jp": "え、何だって？[cite: 3]", "note": ""},
+{"en": "I was afraid because I knew Amanda needed her meds,", "jp": "アマンダの薬が必要なのが分かっていて怖かったんだ、[cite: 3]", "note": ""},
+{"en": "and I didn't think I'd get an advance at the hotel,", "jp": "ホテルで前借りができるとは思えなかった、[cite: 3]", "note": "get an advance（（給料の）前借りを貰う）。[cite: 3]"},
+{"en": "so I paid him in cash. I snuck around his house when he wasn't there and stole it.", "jp": "だから現金で奴に払ったんだ。奴がいない時に家をコソコソ探って盗んだのさ。[cite: 3]", "note": "sneak around（コソコソ動き回る）。[cite: 3]"},
+{"en": "I thought he'd be too cracked out to notice.", "jp": "奴はドラッグでラリりすぎて気づかないと思ってた。[cite: 3]", "note": "cracked out（（ドラッグで）正気・正気を失った、ラリった）。[cite: 3]"},
+{"en": "He did notice, and he wouldn't let it go, and now he's dead.", "jp": "奴は気づいて、絶対うやむやにしなかった、そして今や死んだんだ。[cite: 3]", "note": "let it go（放置する、見逃す、諦める）。[cite: 3]"},
+{"en": "Well, to be honest, that seems practical to me.", "jp": "うーん、正直に言うと、僕にはすごく現実的（合理的）に思えるけどね。[cite: 3]", "note": "to be honest（正直に言うと）。practical（実用的な、現実的な）。[cite: 3]"},
+{"en": "Practical? He shot himself in the head.", "jp": "合理的だって？ 奴は自分の頭を撃ち抜いたんだぞ。[cite: 3]", "note": ""},
+{"en": "- But you're okay, right? - I have nothing.", "jp": "- （ダーク）でも君は無事だろ、そうだろ？ - （トッド）俺には何もないんだ。[cite: 3]", "note": ""},
+{"en": "I don't have my apartment. I have zero money. I have no prospects.", "jp": "アパートもない。金も一切ない。将来の見通しも何もない。[cite: 3]", "note": "prospects（（事業や人生の）見通し、見込み、将来性）。[cite: 3]"},
+{"en": "I'm homeless and living a lie, and I'm a suspect in multiple homicides.", "jp": "ホームレスで嘘にまみれて生きていて、おまけに複数の殺人事件の容疑者だ。[cite: 3]", "note": "multiple homicides（複数の殺人事件）。絶望のどん底。[cite: 3]"},
+{"en": "When you put it like that, it's bad, but we've got a case to solve.", "jp": "そういう風に言われると酷い状態に見えるけど、でも僕たちには解決すべき事件がある。[cite: 3]", "note": "When you put it like that...（そういう言い方をすると/そう表現すると）。[cite: 3]"},
+{"en": "A missing girl, her murdered father, and undoubtedly,", "jp": "行方不明の少女、殺された彼女の父親、そして間違いなく、[cite: 3]", "note": "undoubtedly（間違いなく、疑いなく）。[cite: 3]"},
+{"en": "- more pieces falling into place-- - I am not your Watson, asshole.", "jp": "- （ダーク）さらなるジグソーパズルのピースが収まるべき場所に収まりつつある―― - （トッド）俺はお前のワトソン役じゃないぞ、クソ野郎。[cite: 3]", "note": "fall into place は「（パズルのピースや事態が）適切に収まる、しっくりいく、筋が通る」という超重要イディオム。シャーロック・ホームズの相棒「ワトソン」に例えるダークへの反発。[cite: 3]"},
+{"en": "I'm not available for sidekicking on something I am not involved with.", "jp": "自分に関係ないことの「お供（相棒役）」に付き合ってる暇はない。[cite: 3]", "note": "sidekick は「（物語などの）相棒、お供」。ここでは動詞化して「お供をする」。[cite: 3]"},
+{"en": "I am my own messed-up person, with my own messed-up problems.", "jp": "俺は俺自身のめちゃくちゃな人間で、俺自身のめちゃくちゃな問題を抱えてるんだ。[cite: 3]", "note": "messed-up（めちゃくちゃな、混乱した）。[cite: 3]"},
+{"en": "- So, just-- No, shut up. - Just stop. Stop.", "jp": "- （トッド）だからもう――いや、黙れ。 - （ダーク）やめなさい。やめるんだ。[cite: 3]", "note": ""},
+{"en": "- You never shut up. - Stop. Stop.", "jp": "- （トッド）あんたは一切口を閉じないな。 - （ダーク）ストップ。[cite: 3]", "note": ""},
+{"en": "- Shut up! - Stop!", "jp": "- （トッド）黙れ！ - （ダーク）止まるんだ！[cite: 3]", "note": ""},
+{"en": "You've been making choices out of desperation for too long, that much is obvious.", "jp": "君は長すぎる間、絶望から生じた選択ばかりをし続けてきた、それだけは明白だよ。[cite: 3]", "note": "out of desperation（絶望から、やけくそで）。that much is obvious（それだけは明白だ）。ドラマ全体のテーマを象徴する名セリフ。[cite: 3]"},
+{"en": "You're backing yourself into a corner. Break the pattern.", "jp": "君は自分自身を追い詰めているんだ（自ら追い込んで角に追い込んでいる）。パターン（悪習慣）を破るんだ。[cite: 3]", "note": "back oneself into a corner は「自らを窮地に追い詰める」。Break the pattern.（パターン・悪循環を打ち破れ）。[cite: 3]"},
+{"en": "Take control of your life, Todd.", "jp": "自分の人生を自分でコントロールするんだ、トッド。[cite: 3]", "note": "Take control of...（〜を支配・管理する、自分の手で動かす）。本作の核心。[cite: 3]"},
+{"en": "The instant you take control, interesting things will happen.", "jp": "君が自ら主導権を握った瞬間に、面白いことが起き始めるよ。[cite: 3]", "note": "the instant... は「〜した瞬間に（as soon as... の強調表現）」。[cite: 3]"},
+{"en": "I guarantee it.", "jp": "僕が保証する。[cite: 3]", "note": "guarantee（保証する、請け合う）。[cite: 3]"},
+{"en": "No.", "jp": "いやだ。[cite: 3]", "note": ""},
+{"en": "You know what? No. I don't want to hear all that from you right now.", "jp": "なあ、知るかよ。断るね。今あんたからそんな説教聞きたくない。[cite: 3]", "note": "You know what?（あのさ、なんだか分かるか？）。[cite: 3]"},
+{"en": "Keep the Hallmark card.", "jp": "その「ホールマークのグリーティングカード（お仕着せのお説教）」は取っておけよ。[cite: 3]", "note": "Hallmark card は米国の有名なカード会社。転じて「陳腐でお仕着せの綺麗ごと・説教」を皮肉る比喩表現。[cite: 3]"},
+{"en": "Stop the bus. Stop the bus!", "jp": "バスを止めてくれ。バスを止めてくれ！[cite: 3]", "note": "ダークの言葉を受けて、トッドが「受動的な生活（バスに乗せられているだけの状態）」から自らの意思で降りる決断をする象徴的シーン。[cite: 3]"},
+{"en": "Stop the bus!", "jp": "バスを止めろ！[cite: 3]", "note": ""},
+{"en": "I, uh...", "jp": "俺、その……[cite: 3]", "note": ""},
+{"en": "Your dog, I brought-- The address was on the tag.", "jp": "あんたの犬を連れてきた……首輪の首輪札に住所が書いてあったから。[cite: 3]", "note": "トッドが第1話冒頭で拾って迷っていた犬を、自らの手で飼い主に返す（自分の意思で正しい行動を起こす）瞬間。[cite: 3]"},
+{"en": "Oh. Come here.", "jp": "おお。おいで。[cite: 3]", "note": ""},
+{"en": "Yeah. Thanks. Okay.", "jp": "ああ。どうも。よし。[cite: 3]", "note": ""},
+{"en": "Yeah, that's Brotzman.", "jp": "ああ、あれがブロッツマンだ。[cite: 3]", "note": "トッドを遠くから監視する警察。[cite: 3]"},
+{"en": "And we'll pick another winner tonight.", "jp": "そして今夜、もう一人の当選者を選出します。[cite: 3]", "note": ""},
+{"en": "That's right, every moment is an opportunity.", "jp": "その通りです、すべての瞬間がチャンスなのです。[cite: 3]", "note": "opportunity（機会、チャンス）。テレビの言葉がトッドの決意と二重写しになる。[cite: 3]"},
+{"en": "Every second is a chance to change your life.", "jp": "毎秒が、あなたの人生を変えるチャンスです。[cite: 3]", "note": "a chance to change your life（人生を変える好機）。[cite: 3]"},
+{"en": "This is your big opportunity.", "jp": "これこそが、あなたの絶好の機会です。[cite: 3]", "note": ""},
+{"en": "Every choice is a new beginning.", "jp": "あらゆる選択が、新しい始まりなのです。[cite: 3]", "note": "new beginning（新しい始まり・スタート）。[cite: 3]"},
+{"en": "The smallest decisions in life can have the biggest consequences.", "jp": "人生における最も小さな決断が、最も大きな結果（影響）をもたらすのです。[cite: 3]", "note": "consequence（結果、影響、結末）。全体論（ホリスティック）のテーマ。[cite: 3]"},
+{"en": "It's never too late. This is your chance to fix everything.", "jp": "遅すぎることは決してありません。これこそが、すべてをやり直すチャンスです。[cite: 3]", "note": "It's never too late.（遅すぎるということは決してない）。超頻出名言。[cite: 3]"},
+{"en": "Now, announcing tonight's $10,000 midnight pick.", "jp": "それでは、今夜の1万ドル深夜抽選を発表します。[cite: 3]", "note": ""},
+{"en": "The winning numbers are...", "jp": "当選番号は……[cite: 3]", "note": ""},
+{"en": "seven, four...", "jp": "7……4……[cite: 3]", "note": ""},
+{"en": "five...", "jp": "5……（745＝トッドが事件現場で向かった部屋番号「745号室」）[cite: 3]", "note": ""},
+{"en": "fifteen, zero...", "jp": "15……0……（1501＝ホテルで発見した部屋番号「1501号室」）[cite: 3]", "note": ""},
+{"en": "one.", "jp": "1……[cite: 3]", "note": "トッドが遭遇したすべての不条理な出来事の「部屋番号」が宝くじの当選番号と完全に一致しているという、宇宙の相互接続性（全体論）を示す驚愕のラストシーン。[cite: 3]"}
+ ];
+
+ // ---- データマイグレーションと初期化 ----
+ const savedEvaluated = localStorage.getItem('dirkgently_1_2_evaluated');
+ const savedDates = localStorage.getItem('dirkgently_1_2_dates');
+ const savedSrs = localStorage.getItem('dirkgently_1_2_srs');
+
+ let evaluatedCards = savedEvaluated ? JSON.parse(savedEvaluated) : new Array(cardsData.length).fill(false);
+ let answerDates = savedDates ? JSON.parse(savedDates) : new Array(cardsData.length).fill(null);
+ 
+let srsData = savedSrs ? JSON.parse(savedSrs) : new Array(cardsData.length).fill(null).map(() => ({
+ interval: 0,
+ ease: 2.5,
+ repetitions: 0,
+ nextReview: null
+ }));
+
+ let currentCardIndex = 0;
+ let correctCount = evaluatedCards.filter(Boolean).length;
+ let isFront = true;
+ let currentMode = 'all'; // 'all', 'unanswered', 'review', 'incorrect'
+
+ const frontSide = document.getElementById('front-side');
+ const backSide = document.getElementById('back-side');
+ const frontEngContent = document.getElementById('front-eng-content');
+ const backEngContent = document.getElementById('back-eng-content');
+ const japContent = document.getElementById('jap-content');
+ const noteContent = document.getElementById('note-content');
+ 
+const controlsFront = document.getElementById('controls-front');
+ const controlsBack = document.getElementById('controls-back');
+ const progressText = document.getElementById('progress-text');
+ const scoreText = document.getElementById('score-text');
+ const playBtn = document.getElementById('play-audio-btn');
+ const dateBadge = document.getElementById('date-badge');
+ const srsBadge = document.getElementById('srs-badge');
+ const modeIndicator = document.getElementById('mode-indicator');
+
+ function saveProgress() {
+ localStorage.setItem('dirkgently_1_2_evaluated', JSON.stringify(evaluatedCards));
+ localStorage.setItem('dirkgently_1_2_dates', JSON.stringify(answerDates));
+ localStorage.setItem('dirkgently_1_2_srs', JSON.stringify(srsData));
+ }
+
+ // YYYY-MM-DD 形式で日付を取得（比較用）
+ function getTodayStringFormatted() {
+ const d = new Date();
+ const y = d.getFullYear();
+ const m = String(d.getMonth() + 1).padStart(2, '0');
+ const day = String(d.getDate()).padStart(2, '0');
+ return `${y}-${m}-${day}`;
+ }
+
+ // 指定日数を足した日付文字列を返す
+ function addDaysToDate(days) {
+ const d = new Date();
+ d.setDate(d.getDate() + days);
+ const y = d.getFullYear();
+ const m = String(d.getMonth() + 1).padStart(2, '0');
+ const day = String(d.getDate()).padStart(2, '0');
+ return `${y}-${m}-${day}`;
+ }
+
+ function getVisibleIndices() {
+ let indices = [];
+ const today = getTodayStringFormatted();
+ 
+for (let i = 0; i < cardsData.length; i++) {
+ if (currentMode === 'all') {
+ indices.push(i);
+ } else if (currentMode === 'unanswered') {
+ if (!answerDates[i]) indices.push(i);
+ } else if (currentMode === 'incorrect') {
+ if (answerDates[i] && !evaluatedCards[i]) indices.push(i);
+ } else if (currentMode === 'review') {
+ // 次回の復習日が設定されていて、かつ今日以前の場合
+ if (srsData[i].nextReview && srsData[i].nextReview <= today) {
+ indices.push(i);
+ }
+ }
+ }
+ return indices;
+ }
+
+ function updateUI() {
+ let indices = getVisibleIndices();
+ 
+if (indices.length === 0) {
+ frontSide.style.display = 'flex';
+ backSide.style.display = 'none';
+ controlsFront.style.display = 'none';
+ controlsBack.style.display = 'none';
+ frontEngContent.innerHTML = "<div class='empty-state'>🎉 このモードの対象カードはありません！<br>上のボタンから別のモードに切り替えてね。</div>";
+ dateBadge.style.display = 'none';
+ srsBadge.style.display = 'none';
+ playBtn.style.display = 'none';
+ progressText.textContent = `- / ${cardsData.length}`;
+ scoreText.textContent = `正解数: ${correctCount}`;
+ return;
+ }
+
+ dateBadge.style.display = 'inline-block';
+ srsBadge.style.display = 'block';
+ playBtn.style.display = 'flex';
+
+ if (!indices.includes(currentCardIndex)) {
+ currentCardIndex = indices[0];
+ }
+
+ let pos = indices.indexOf(currentCardIndex);
+ progressText.textContent = `${pos + 1} / ${indices.length} (全${cardsData.length}問)`;
+ scoreText.textContent = `正解数: ${correctCount}`;
+
+ let dateStr = answerDates[currentCardIndex];
+ dateBadge.textContent = dateStr ? `最終回答日：${dateStr}` : `最終回答日：未回答`;
+
+ let srs = srsData[currentCardIndex];
+ if (srs.nextReview) {
+ srsBadge.textContent = `次回予定日: ${srs.nextReview} (連続正解: ${srs.repetitions}回)`;
+ } else {
+ srsBadge.textContent = `まだSRSに登録されていません`;
+ }
+
+ if (isFront) {
+ frontSide.style.display = 'flex';
+ backSide.style.display = 'none';
+ controlsFront.style.display = 'flex';
+ controlsBack.style.display = 'none';
+ } else {
+ frontSide.style.display = 'none';
+ backSide.style.display = 'flex';
+ controlsFront.style.display = 'none';
+ controlsBack.style.display = 'flex';
+ }
+
+ frontEngContent.textContent = cardsData[currentCardIndex].en;
+ backEngContent.textContent = cardsData[currentCardIndex].en;
+ japContent.textContent = cardsData[currentCardIndex].jp;
+ 
+if (cardsData[currentCardIndex].note) {
+ noteContent.style.display = 'block';
+ noteContent.textContent = "💡 " + cardsData[currentCardIndex].note;
+ } else {
+ noteContent.style.display = 'none';
+ }
+ }
+
+ function flipCard() {
+ isFront = !isFront;
+ updateUI();
+ }
+
+ function returnToFront() {
+ isFront = true;
+ updateUI();
+ }
+
+ function advanceCard(forward) {
+ let indices = getVisibleIndices();
+ if (indices.length === 0) {
+ updateUI();
+ return;
+ }
+
+ let pos = indices.indexOf(currentCardIndex);
+ 
+if (pos !== -1) {
+ if (forward) {
+ currentCardIndex = indices[(pos + 1) % indices.length];
+ } else {
+ // 前へボタンのループ処理
+ currentCardIndex = indices[(pos - 1 + indices.length) % indices.length];
+ }
+ } else {
+ let nextIdx = indices.find(i => i > currentCardIndex);
+ currentCardIndex = nextIdx !== undefined ? nextIdx : indices[0];
+ }
+ 
+isFront = true;
+ updateUI();
+ }
+
+ function nextCard() { advanceCard(true); }
+ function prevCard() { advanceCard(false); }
+
+ function markCorrect() {
+ // 従来のカウント用処理
+ let wasCorrect = evaluatedCards[currentCardIndex];
+ if (!wasCorrect) {
+ correctCount++;
+ evaluatedCards[currentCardIndex] = true;
+ }
+ answerDates[currentCardIndex] = getTodayStringFormatted();
+
+ // SRS (SM-2) アルゴリズムによる「完璧！」の処理
+ let cardSrs = srsData[currentCardIndex];
+ cardSrs.repetitions += 1;
+ 
+if (cardSrs.repetitions === 1) {
+ cardSrs.interval = 1; // 初回は1日後
+ } else if (cardSrs.repetitions === 2) {
+ cardSrs.interval = 6; // 2回目は6日後
+ } else {
+ cardSrs.interval = Math.round(cardSrs.interval * cardSrs.ease);
+ }
+ cardSrs.nextReview = addDaysToDate(cardSrs.interval);
+
+ saveProgress();
+ nextCard();
+ }
+
+ function markIncorrect() {
+ // 従来のカウント用処理
+ let wasCorrect = evaluatedCards[currentCardIndex];
+ if (wasCorrect) {
+ correctCount--;
+ evaluatedCards[currentCardIndex] = false;
+ }
+ answerDates[currentCardIndex] = getTodayStringFormatted();
+
+ // SRS (SM-2) アルゴリズムによる「覚えてない」の処理
+ let cardSrs = srsData[currentCardIndex];
+ cardSrs.repetitions = 0; // 連続正解リセット
+ cardSrs.interval = 1; // 翌日に再出題
+ cardSrs.ease = Math.max(1.3, cardSrs.ease - 0.2); // 定着度（難易度係数）を下げる
+ cardSrs.nextReview = addDaysToDate(cardSrs.interval);
+
+ saveProgress();
+ nextCard();
+ }
+
+ function setMode(mode) {
+ currentMode = mode;
+ 
+const modeNames = {
+ 'all': '📁 全問',
+ 'unanswered': '🆕 未回答',
+ 'review': '📅 今日の復習',
+ 'incorrect': '🎯 未正解'
+ };
+ modeIndicator.textContent = `現在のモード：${modeNames[mode]}`;
+
+ let indices = getVisibleIndices();
+ if (indices.length > 0) {
+ currentCardIndex = indices[0];
+ }
+ isFront = true;
+ updateUI();
+ }
+
+ function jumpToUnanswered() {
+ let indices = getVisibleIndices();
+ if (indices.length === 0) return;
+
+ let targetIndex = indices.find(index => !answerDates[index]);
+
+ if (targetIndex !== undefined) {
+ currentCardIndex = targetIndex;
+ } else {
+ currentCardIndex = indices[0];
+ }
+ 
+isFront = true;
+ updateUI();
+ }
+
+ function speakText() {
+ const textToSpeak = cardsData[currentCardIndex].en;
+ window.speechSynthesis.cancel();
+ const utterance = new SpeechSynthesisUtterance(textToSpeak);
+ utterance.lang = 'en-US';
+ utterance.rate = 0.9;
+ window.speechSynthesis.speak(utterance);
+ }
+
+ playBtn.addEventListener('click', speakText);
+
+ updateUI();
+ </script>
+</body>
+</html>
